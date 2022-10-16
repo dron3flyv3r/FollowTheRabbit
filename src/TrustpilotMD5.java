@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 
 public class TrustpilotMD5 extends Thread {
@@ -15,11 +13,17 @@ public class TrustpilotMD5 extends Thread {
     //private static final String hash = "23170acc097c24edb98fc5488ab033fe";
     //private static final String hash = "665e5bcb0c20062fe8abaaf4628bb154";
 
-    TrustpilotMD5(int numberOfThreads) {
+    TrustpilotMD5(int numberOfThreads, boolean full) {
+        if (full) {
+            threadCount = numberOfThreads;
+            anagramToArray();
+            readWordList();
+        }
         startTime = System.nanoTime();
-        threadCount = numberOfThreads;
-        anagramToArray();
-        readWordList();
+        generateAnagrams();
+    }
+
+    public void checkAgain() {
         generateAnagrams();
     }
 
@@ -161,9 +165,12 @@ public class TrustpilotMD5 extends Thread {
                                     String testPhrase = wordList.get(i) + " " + wordList.get(j) + " " + wordList.get(k);
                                 if (isAnagram(testPhrase)) {
                                     if (Hashing.MD5Hash(testPhrase).equals(hash)) {
-                                        System.out.println("Time: " + ((System.nanoTime() - startTime) / 1000000) + "ms");
-                                        System.out.println("Found anagram: " + testPhrase);
-                                        System.exit(0);
+                                        //System.out.println("Time: " + ((System.nanoTime() - startTime) / 1000000) + "ms");
+                                        //System.out.println("Found anagram: " + testPhrase);
+                                        //System.exit(0);
+                                        long endTime = System.nanoTime();
+                                        // save the time to a txt file
+                                        Main.AddTime((float) (endTime - startTime) / 1000000);
                                     }
                                 }
                             }
